@@ -1,14 +1,17 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 
-#USO DE LA LIBRERIAS
-st.title("Proyecto final UCG")
-st.sidebar.title("Parámetros")
-st.sidebar.image("LogoPhyton.png")
+import plotly.express as px  # ← Uncomment this line
 
-# 1.- cargar un dataset
+#Import prueba
+
+#TITULO DE LA APLICACION
+
+st.set_page_config(page_title="Análisis de Clientes Bancarios", layout="wide")
+st.write("Aplicación para cargar, explorar, analizar y visualizar información financiera de clientes bancarios.")
+
+
+# Carga de datos
 st.sidebar.header("1. Carga del dataset")
 archivo = st.sidebar.file_uploader("Suba el archivo CSV", type=["csv"])
 
@@ -21,96 +24,139 @@ if archivo:
     st.header("2. Previsualización del dataset")
     st.dataframe(df.head())
 
+    # Información general
+    st.header("3. Exploración inicial de datos")
+    col1, col2, col3 = st.columns(3)
 
-full_data = pd.read_csv("Churn_Modelling.csv", index_col=0)
-st.header("2. Previsualización del dataset")
-st.dataframe(full_data.head())
+    col1.metric("Total de clientes", df.shape[0])
+    col2.metric("Total de columnas", df.shape[1])
+    col3.metric("Regiones", df["region"].nunique())
 
-# 2.- Exploración inicial de Datos
-modulo = st.sidebar.selectbox("Exploración inicial de Datos.. Seleccione:", ["Relación de Clientes Activos versus Clientes que se han ido", "Relación de Años de permanencia laboral versus Clientes que se han ido", "Relación de Número de Productos versus Clientes que se han ido", "Relación de Género del Cliente versus Clientes que se han ido", "Cantidad de clientes que permanecen (0) vs. clientes que abandonaron (1)", "Graficar la distribución de edades según el estado de abandono"] )
+    st.subheader("Tipos de datos")
+    st.dataframe(df.dtypes.astype(str))
 
-if modulo  == "Relación de Clientes Activos versus Clientes que se han ido":
-    # 2.1. Relación de Miembros Activos versus Clientes que se han ido
-    st.subheader("2.1. Relación de Clientes Activos versus Clientes que se han ido")
-    resultado = (
-        full_data.groupby("IsActiveMember")["Exited"]
-        .mean()
-        .mul(100)
-        .round(2)
-        .reset_index()
+    st.subheader("Valores nulos")
+    st.dataframe(df.isnull().sum())
+
+    # Selección de variables
+    st.header("4. Selección de variables para análisis")
+
+    categoricas = [
+        "region",
+        "ciudad",
+        "estado_deuda_prestamo",
+        "tarjeta",
+        "ha_hecho_refinanciamientos"
+    ]
+
+    numericas = [
+        "sueldo",
+        "cargas_familiares",
+        "saldo_deuda_prestamo",
+        "saldo_deuda_tarjetas",
+        "monto_inversiones"
+    ]
+
+    cat_sel = st.multiselect(
+        "Seleccione 2 variables categóricas",
+        categoricas,
+        default=["region", "estado_deuda_prestamo"],
+        max_selections=2
     )
-    resultado["Exited"] = resultado["Exited"].astype(str) + "%"
-    st.dataframe(resultado)
-# 2.2. Relación de Años de permanencia laboral versus Clientes que se han ido
-elif modulo  == "Relación de Años de permanencia laboral versus Clientes que se han ido":
-    st.subheader("\n2.2. Relación de Años de permanencia laboral versus Clientes que se han ido")
-    resultado = (
-        full_data.groupby("Tenure")["Exited"]
-        .mean()
-        .mul(100)
-        .round(2)
-        .reset_index()
+
+    num_sel = st.multiselect(
+        "Seleccione 2 variables numéricas",
+        numericas,
+        default=["sueldo", "saldo_deuda_prestamo"],
+        max_selections=2
     )
-    resultado["Exited"] = resultado["Exited"].astype(str) + "%"
-    st.dataframe(resultado)
-# 2.3. Relación de Número de Productos versus Clientes que se han ido
-elif modulo  == "Relación de Número de Productos versus Clientes que se han ido":
-    st.subheader("\n2.3. Relación de Número de Productos versus Clientes que se han ido")
-    resultado = (
-        full_data.groupby("NumOfProducts")["Exited"]
-        .mean()
-        .mul(100)
-        .round(2)
-        .reset_index()
+
+    # Filtros
+    st.header("5. Filtros interactivos")
+
+    region = st.multiselect(
+        "Filtrar por región",
+        df["region"].unique(),
+        default=df["region"].unique()
     )
-    resultado["Exited"] = resultado["Exited"].astype(str) + "%"
-    st.dataframe(resultado)
-# 2.4. Relación de Género del Cliente versus Clientes que se han ido
-elif modulo  == "Relación de Género del Cliente versus Clientes que se han ido":
-    st.subheader("\n2.4. Relación de Género del Cliente versus Clientes que se han ido")
-    resultado = (
-        full_data.groupby("Gender")["Exited"]
-        .mean()
-        .mul(100)
-        .round(2)
-        .reset_index()
+
+    ciudad = st.multiselect(
+        "Filtrar por ciudad",
+        df["ciudad"].unique(),
+        default=df["ciudad"].unique()
     )
-    resultado["Exited"] = resultado["Exited"].astype(str) + "%"
-    st.dataframe(resultado)
-# 2.5. Cantidad de clientes que permanecen (0) vs. clientes que abandonaron (1)
-elif modulo  == "Cantidad de clientes que permanecen (0) vs. clientes que abandonaron (1)":
-    st.write("Distribución de Clientes:")
-    resultado = full_data["Exited"].value_counts().reset_index()
-    resultado.columns = ["Exited", "Cantidad"]
-    st.dataframe(resultado)
-    # Edad promedio (según estado de abandono):
-    st.write("Edad promedio (según estado de abandono):")
-    resultado = (
-        full_data.groupby("Exited")["Age"]
-        .mean()
-        .reset_index()
+
+    df_filtrado = df[
+        (df["region"].isin(region)) &
+        (df["ciudad"].isin(ciudad))
+    ]
+
+    st.write("Clientes filtrados:", df_filtrado.shape[0])
+    st.dataframe(df_filtrado)
+
+    # Gráficas categóricas
+    st.header("6. Gráficas de variables categóricas")
+
+    for cat in cat_sel:
+        fig = px.histogram(
+            df_filtrado,
+            x=cat,
+            title=f"Distribución de clientes por {cat}"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    # Gráficas numéricas
+    st.header("7. Análisis de variables numéricas")
+
+    for num in num_sel:
+        fig = px.histogram(
+            df_filtrado,
+            x=num,
+            nbins=30,
+            title=f"Distribución de {num}"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    # Relación entre numéricas
+    if len(num_sel) == 2:
+        st.subheader("Relación entre variables numéricas")
+        fig = px.scatter(
+            df_filtrado,
+            x=num_sel[0],
+            y=num_sel[1],
+            color="region",
+            title=f"Relación entre {num_sel[0]} y {num_sel[1]}"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    # Indicadores financieros
+    st.header("8. Indicadores financieros")
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric(
+        "Sueldo promedio",
+        round(df_filtrado["sueldo"].mean(), 2)
     )
-    st.dataframe(resultado)    # ¿Los clientes que tienen tarjeta de crédito son más leales?
-    st.write("Tasa de abandono según tenencia de tarjeta de crédito:")
-    resultado = (
-        pd.crosstab(
-            full_data["HasCrCard"],
-            full_data["Exited"],
-            normalize="index"
-        ) * 100
-    ).round(2)
-    st.dataframe(resultado)
-# 2.6. Graficar la distribución de edades según el estado de abandono
-elif modulo  == "Graficar la distribución de edades según el estado de abandono":
-    fig, ax = plt.subplots(figsize=(12, 6))
-    sns.kdeplot(
-    data=full_data,
-    x="Age",
-    hue="Exited",
-    fill=True,
-    ax=ax
+
+    col2.metric(
+        "Deuda préstamo promedio",
+        round(df_filtrado["saldo_deuda_prestamo"].mean(), 2)
     )
-    ax.set_title("Distribución de edades según abandono")
-    ax.set_xlabel("Edad")
-    ax.set_ylabel("Densidad")
-    st.pyplot(fig)
+
+    col3.metric(
+        "Inversión promedio",
+        round(df_filtrado["monto_inversiones"].mean(), 2)
+    )
+
+    # Resultados
+    st.header("9. Resultados del análisis")
+
+    st.write("""
+    Con esta aplicación se puede analizar el perfil financiero de los clientes,
+    identificar diferencias por región y ciudad, revisar niveles de deuda,
+    inversiones, cargas familiares y comportamiento de refinanciamiento.
+    """)
+
+else:
+    st.info("Suba un archivo CSV para iniciar el análisis.")
