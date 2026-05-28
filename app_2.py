@@ -1,12 +1,12 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-#import seaborn as sns
+import seaborn as sns
 
 #USO DE LA LIBRERIAS
 st.title("Proyecto final UCG")
 st.sidebar.title("Parámetros")
-st.sidebar.image("Python_logo.png")
+st.sidebar.image("LogoPhyton.png")
 
 # 1.- cargar un dataset
 st.sidebar.header("1. Carga del dataset")
