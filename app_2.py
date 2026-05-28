@@ -4,6 +4,9 @@ import pandas as pd
 import plotly.express as px  # ← Uncomment this line
 
 #Import prueba
+st.title("Proyecto final UCG")
+st.sidebar.title("Parámetros")
+st.sidebar.image("LogoPhyton.png")
 
 #TITULO DE LA APLICACION
 
