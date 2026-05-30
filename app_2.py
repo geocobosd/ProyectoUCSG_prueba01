@@ -141,3 +141,11 @@ elif modulo  == "7.-Selección de variables para análisis":
         default=["CreditScore", "Balance"],
         max_selections=2
     )
+    for cat in cat_sel:
+        fig = px.histogram(
+            df_filtrado,
+            x=cat,
+            title=f"Distribución de clientes por {cat}"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
