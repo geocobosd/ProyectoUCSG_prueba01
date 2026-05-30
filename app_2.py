@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+import plotly.express as px 
 
 st.title("Proyecto final UCG")
 st.sidebar.title("Parámetros")
