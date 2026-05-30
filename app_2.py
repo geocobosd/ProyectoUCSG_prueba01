@@ -116,6 +116,7 @@ elif modulo  == "6.-Graficar la distribución de edades según el estado de aban
     st.pyplot(fig)
 # 2.7. Graficar la distribución de edades según el estado de abandono
 elif modulo  == "7.-Selección de variables para análisis":
+    st.write("Selección de variables para análisis:")
     categoricas = [
         "Geography",
         "Gender",
@@ -128,3 +129,15 @@ elif modulo  == "7.-Selección de variables para análisis":
         "Balance",
         "EstimatedSalary"
     ]
+    cat_sel = st.multiselect(
+        "Seleccione 2 variables categóricas",
+        categoricas,
+        default=["Geography", "Gender"],
+        max_selections=2
+    )
+    num_sel = st.multiselect(
+        "Seleccione 2 variables numéricas",
+        numericas,
+        default=["CreditScore", "Balance"],
+        max_selections=2
+    )
