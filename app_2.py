@@ -141,6 +141,25 @@ elif modulo  == "7.-Selección de variables para análisis":
         default=["CreditScore", "Balance"],
         max_selections=2
     )
+        # Filtros
+    st.header("5. Filtros interactivos")
+
+    region = st.multiselect(
+        "Filtrar por región",
+        df["region"].unique(),
+        default=df["region"].unique()
+    )
+    ciudad = st.multiselect(
+        "Filtrar por Geography",
+        df["Geography"].unique(),
+        default=df["Geography"].unique()
+    )
+
+    df_filtrado = df[
+        (df["Geography"].isin(Geography)) &
+        (df["Gender"].isin(Gender))
+    ]
+
     for cat in cat_sel:
         fig = px.histogram(
             df_filtrado,
