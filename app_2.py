@@ -27,7 +27,7 @@ st.header("2. Previsualización del dataset")
 st.dataframe(full_data.head())
 
 # 2.- Exploración inicial de Datos
-modulo = st.sidebar.selectbox("Exploración inicial de Datos.. Seleccione:", ["Relación de Clientes Activos versus Clientes que se han ido", "Relación de Años de permanencia laboral versus Clientes que se han ido", "Relación de Número de Productos versus Clientes que se han ido", "Relación de Género del Cliente versus Clientes que se han ido", "Cantidad de clientes que permanecen (0) vs. clientes que abandonaron (1)", "Graficar la distribución de edades según el estado de abandono"] )
+modulo = st.sidebar.selectbox("Exploración inicial de Datos.. Seleccione:", ["Relación de Clientes Activos versus Clientes que se han ido", "Relación de Años de permanencia laboral versus Clientes que se han ido", "Relación de Número de Productos versus Clientes que se han ido", "Relación de Género del Cliente versus Clientes que se han ido", "Cantidad de clientes que permanecen (0) vs. clientes que abandonaron (1)", "Graficar la distribución de edades según el estado de abandono","Selección de variables para análisis"] )
 
 if modulo  == "Relación de Clientes Activos versus Clientes que se han ido":
     # 2.1. Relación de Miembros Activos versus Clientes que se han ido
