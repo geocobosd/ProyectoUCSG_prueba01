@@ -144,15 +144,15 @@ elif modulo  == "7.-Selección de variables para análisis":
         # Filtros
     st.header("5. Filtros interactivos")
 
-    region = st.multiselect(
-        "Filtrar por región",
-        df["region"].unique(),
-        default=df["region"].unique()
-    )
-    ciudad = st.multiselect(
+    Geography = st.multiselect(
         "Filtrar por Geography",
         df["Geography"].unique(),
         default=df["Geography"].unique()
+    )
+    Gender = st.multiselect(
+        "Filtrar por Gender",
+        df["Gender"].unique(),
+        default=df["Gender"].unique()
     )
 
     df_filtrado = df[
