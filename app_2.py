@@ -29,7 +29,7 @@ st.dataframe(full_data.head())
 # 2.- Exploración inicial de Datos
 modulo = st.sidebar.selectbox("Exploración inicial de Datos.. Seleccione:", ["1.-Relación de Clientes Activos versus Clientes que se han ido", "2.-Relación de Años de permanencia laboral versus Clientes que se han ido", "3.-Relación de Número de Productos versus Clientes que se han ido", "4.-Relación de Género del Cliente versus Clientes que se han ido", "5.-Cantidad de clientes que permanecen (0) vs. clientes que abandonaron (1)", "6.-Graficar la distribución de edades según el estado de abandono","7.-Selección de variables para análisis"] )
 
-if modulo  == "Relación de Clientes Activos versus Clientes que se han ido":
+if modulo  == "1.-Relación de Clientes Activos versus Clientes que se han ido":
     # 2.1. Relación de Miembros Activos versus Clientes que se han ido
     st.subheader("2.1. Relación de Clientes Activos versus Clientes que se han ido")
     resultado = (
@@ -42,7 +42,7 @@ if modulo  == "Relación de Clientes Activos versus Clientes que se han ido":
     resultado["Exited"] = resultado["Exited"].astype(str) + "%"
     st.dataframe(resultado)
 # 2.2. Relación de Años de permanencia laboral versus Clientes que se han ido
-elif modulo  == "Relación de Años de permanencia laboral versus Clientes que se han ido":
+elif modulo  == "2.-Relación de Años de permanencia laboral versus Clientes que se han ido":
     st.subheader("\n2.2. Relación de Años de permanencia laboral versus Clientes que se han ido")
     resultado = (
         full_data.groupby("Tenure")["Exited"]
@@ -54,7 +54,7 @@ elif modulo  == "Relación de Años de permanencia laboral versus Clientes que s
     resultado["Exited"] = resultado["Exited"].astype(str) + "%"
     st.dataframe(resultado)
 # 2.3. Relación de Número de Productos versus Clientes que se han ido
-elif modulo  == "Relación de Número de Productos versus Clientes que se han ido":
+elif modulo  == "3.-Relación de Número de Productos versus Clientes que se han ido":
     st.subheader("\n2.3. Relación de Número de Productos versus Clientes que se han ido")
     resultado = (
         full_data.groupby("NumOfProducts")["Exited"]
@@ -66,7 +66,7 @@ elif modulo  == "Relación de Número de Productos versus Clientes que se han id
     resultado["Exited"] = resultado["Exited"].astype(str) + "%"
     st.dataframe(resultado)
 # 2.4. Relación de Género del Cliente versus Clientes que se han ido
-elif modulo  == "Relación de Género del Cliente versus Clientes que se han ido":
+elif modulo  == "4.-Relación de Género del Cliente versus Clientes que se han ido":
     st.subheader("\n2.4. Relación de Género del Cliente versus Clientes que se han ido")
     resultado = (
         full_data.groupby("Gender")["Exited"]
@@ -78,7 +78,7 @@ elif modulo  == "Relación de Género del Cliente versus Clientes que se han ido
     resultado["Exited"] = resultado["Exited"].astype(str) + "%"
     st.dataframe(resultado)
 # 2.5. Cantidad de clientes que permanecen (0) vs. clientes que abandonaron (1)
-elif modulo  == "Cantidad de clientes que permanecen (0) vs. clientes que abandonaron (1)":
+elif modulo  == "5.-Cantidad de clientes que permanecen (0) vs. clientes que abandonaron (1)":
     st.write("Distribución de Clientes:")
     resultado = full_data["Exited"].value_counts().reset_index()
     resultado.columns = ["Exited", "Cantidad"]
@@ -101,7 +101,7 @@ elif modulo  == "Cantidad de clientes que permanecen (0) vs. clientes que abando
     ).round(2)
     st.dataframe(resultado)
 # 2.6. Graficar la distribución de edades según el estado de abandono
-elif modulo  == "Graficar la distribución de edades según el estado de abandono":
+elif modulo  == "6.-Graficar la distribución de edades según el estado de abandono":
     fig, ax = plt.subplots(figsize=(12, 6))
     sns.kdeplot(
     data=full_data,
@@ -114,4 +114,17 @@ elif modulo  == "Graficar la distribución de edades según el estado de abandon
     ax.set_xlabel("Edad")
     ax.set_ylabel("Densidad")
     st.pyplot(fig)
-
+# 2.7. Graficar la distribución de edades según el estado de abandono
+elif modulo  == "7.-Selección de variables para análisis":
+    categoricas = [
+        "Geography",
+        "Gender",
+        "HasCrCard",
+        "IsActiveMember",
+        "Exited"
+    ]
+    numericas = [
+        "CreditScore",
+        "Balance",
+        "EstimatedSalary"
+    ]
